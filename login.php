@@ -83,8 +83,8 @@
 
   </main>
   <!-- Bootstrap core JavaScript -->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="venviet/jquery/jquery.min.js"></script>
+  <script src="venviet/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <?php
         if(isset($_POST['submit'])) {
