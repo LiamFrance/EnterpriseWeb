@@ -1,8 +1,8 @@
 <?php
-$servername="ec2-34-252-251-16.eu-west-1.compute.amazonaws.com";
-$DBusername="ykjsyxshexqjyz";
-$DBpass="a41db76161b02937b3222bc1d675aaeba4ecbe2e1132a88cdd6f33cc8698281a";
-$DBname="comp1640";
+$servername="eu-cdbr-west-01.cleardb.com";
+$DBusername="bc022dadd684d2";
+$DBpass="d66c09f7";
+$DBname="heroku_0235c4bd791f42d";
 
 $conn= mysqli_connect($servername,$DBusername,$DBpass,$DBname);
 if (!$conn){
