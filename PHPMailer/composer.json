@@ -2,10 +2,7 @@
     "name": "phpmailer/phpmailer",
     "type": "library",
     "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-    "post-install-cmd": [
-     "php artisan clear-compiled",
-     "chmod -R 777 public/"
- ],
+    
     "authors": [
         {
             "name": "Marcus Bointon",
