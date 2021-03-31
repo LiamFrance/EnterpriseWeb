@@ -47,6 +47,7 @@
         $AgreeError="";
         $msg="";
         $deadlineMsg="";
+        $term_deadline="";
         $get_deadline = "select * from term ";
         $run_deadline = mysqli_query($conn,$get_deadline);
     while ($row_deadline = mysqli_fetch_array($run_deadline)){  
@@ -59,7 +60,7 @@
         $now= strtotime($date_now);
         $deadline= strtotime($term_deadline);
     
-    $dupcheck = "select * from post where user_id = '$id'";
+    $dupcheck = "select * from post where user_id = '$id' and term_id=$term_id";
     $run_dupcheck = mysqli_query($conn,$dupcheck);
     if(!$row_dupcheck = mysqli_fetch_array($run_dupcheck)){
         $IsDup=false;
@@ -182,11 +183,11 @@ if(isset($_POST['submit'])){
   <title>Student Page</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="venviet/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom fonts for this template -->
-  <link href="venviet/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="venviet/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+  <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
   <!-- Custom styles for this template -->
@@ -305,8 +306,8 @@ if(isset($_POST['submit'])){
   </footer>
 
   <!-- Bootstrap core JavaScript -->
-  <script src="venviet/jquery/jquery.min.js"></script>
-  <script src="venviet/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
