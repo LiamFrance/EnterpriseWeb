@@ -1,6 +1,6 @@
 <?php 
 	session_start();
-	include("DatabaseConfig/dbConfig.php");
+	include("DatabaseConfig/DbConfig.php");
 
 	if(!isset($_SESSION['id'])){
 		echo "<script>window.open('login.php','_self')</script>";

@@ -1,6 +1,6 @@
 <?php
 session_start();
-	include("DatabaseConfig/dbConfig.php");
+	include("DatabaseConfig/DbConfig.php");
 if (isset($_GET['user_id'])) {
     $uID=$_GET['user_id'];
     $query = "DELETE FROM user WHERE user_id = '$uID'";

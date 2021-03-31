@@ -1,6 +1,6 @@
 <?php
 session_start();
-	include("DatabaseConfig/dbConfig.php");
+	include("DatabaseConfig/DbConfig.php");
 if (isset($_GET['term_id'])) {
     $tID=$_GET['term_id'];
     $query = "DELETE FROM term WHERE term_id = '$tID'";

@@ -1,10 +1,7 @@
 <?php 
 	session_start();
         include ('sendMail.php');
-	include("DatabaseConfig/dbConfig.php");
-    define('DBINFO', 'mysql:host=localhost;dbname=comp1640');
-    define('DBUSER','root');
-    define('DBPASS','');
+	include("DatabaseConfig/DbConfig.php");
 
     function fetchAll($query){
         $con = new PDO(DBINFO, DBUSER, DBPASS);
