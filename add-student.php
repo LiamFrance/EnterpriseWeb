@@ -36,11 +36,11 @@
     <title>Admin Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
         type="text/css">
 
@@ -67,7 +67,6 @@
             <div class="text-center">
                 <img src="img/avatar.png" class="rounded avatar mx-auto img-fluid" alt="...">
                 <h2><?php echo"Name: ", $admin_name ?></h2>
-                <div>DOB: 11/1/2011</div>
                 <div><?php echo"Email: ",$admin_email ?></div>
                 <div>Phone Number: 923874239</div>
             </div>
@@ -117,7 +116,7 @@
                     $error = "<br>Can't add user, please try again";
                     } else {
                         $msg = "Added $username successfully!";
-                        header("Location:add-coordinator.php?successful");
+                        header("Location:AdminHome.php?successful");
                     }  
                 }else{
                     echo ' <div class="alert alert-danger alert-dismissible fade show ">

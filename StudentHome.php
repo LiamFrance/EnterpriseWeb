@@ -86,6 +86,7 @@ if(isset($_POST['submit'])){
     $DocuClear=false;
     $UploadClear=false;
     $AgreeClear=false;
+    $UpdateClear=false;
     // Type of file supported
     $supportedImgFormat = array('jpg', 'jpeg', 'png');
     $supportedFileFormat = array('pdf', 'txt', 'docx','doc','zip','rar');
@@ -143,7 +144,7 @@ if(isset($_POST['submit'])){
             $prep->execute();                  
             $UploadClear=true;         
         }elseif($ImageClear==true&&$DocuClear==true&&$AgreeClear==true&&$IsDup==true){//Edit a post within deadline
-            $sql = "UPDATE post SET post_image = '$realImageFile', post_file = '$realDocuFile' , submit_date = CURRENT_TIMESTAMP WHERE user_id = '$id'";
+            $sql = "UPDATE post SET post_image = '$realImageFile', post_file = '$realDocuFile' , submit_date = CURRENT_TIMESTAMP WHERE user_id = '$id' and term_id='$term_id'";
             $prep = $conn->prepare($sql);
             $prep->execute();                  
             $UpdateClear=true;
@@ -183,11 +184,11 @@ if(isset($_POST['submit'])){
   <title>Student Page</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom fonts for this template -->
-  <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
   <!-- Custom styles for this template -->
@@ -220,6 +221,14 @@ if(isset($_POST['submit'])){
         <a href="logout.php">Log out</a>
       </div>
     </div>
+    <?php
+      if(isset($_GET['Student-Table'])){
+        include("Student-Table.php");
+      }else
+      if(isset($_GET['submit-student'])){
+        include("submit-student.php");
+      }else{
+     ?>
     <div class="content">
       <div class="content-stuff">
       	<form id="upload_form" method="post" enctype="multipart/form-data">
@@ -251,59 +260,15 @@ if(isset($_POST['submit'])){
                 }
                     echo $deadlineMsg;
                  ?>                
-          <a href="submit-student.php" class="btn btn-outline-primary">View Your Submission</a>
+          <a href="StudentHome.php?Student-Table" class="btn btn-outline-primary">View Your Submission</a>
     	</form>
       </div>
     </div>
+  <?php } ?>
   </div>
  
 
-  <!-- Footer -->
-  <footer class="footer bg-dark">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
-          <ul class="list-inline mb-2">
-            <li class="list-inline-item">
-              <a href="#">About</a>
-            </li>
-            <li class="list-inline-item"> </li>
-            <li class="list-inline-item">
-              <a href="#">Contact</a>
-            </li>
-            <li class="list-inline-item"> </li>
-            <li class="list-inline-item">
-              <a href="#">Terms of Use</a>
-            </li>
-            <li class="list-inline-item"> </li>
-            <li class="list-inline-item">
-              <a href="#">Privacy Policy</a>
-            </li>
-          </ul>
-          <p class="text-muted small mb-4 mb-lg-0">&copy; All Rights Reserved.</p>
-        </div>
-        <div class="col-lg-6 h-100 text-center text-lg-right my-auto">
-          <ul class="list-inline mb-0">
-            <li class="list-inline-item mr-3">
-              <a href="#">
-                <i class="fab fa-facebook fa-2x fa-fw"></i>
-              </a>
-            </li>
-            <li class="list-inline-item mr-3">
-              <a href="#">
-                <i class="fab fa-twitter-square fa-2x fa-fw"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a href="#">
-                <i class="fab fa-instagram fa-2x fa-fw"></i>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </footer>
+
 
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>

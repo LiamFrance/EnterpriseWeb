@@ -41,17 +41,17 @@
     <title>Student Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
         type="text/css">
 
     <!-- Custom styles for this template -->
     <link href="css/landing-page.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style2.css">
+    <link rel="stylesheet" href="css/style.css">
 
 </head>
 
@@ -103,11 +103,11 @@
                     <?php 
                         if(isset($_POST['submit'])){
                             $comment = $_POST['comment'];
+                            $comment_new = str_replace( array( '\'', '"', ',' , ';', '<', '>' ), ' ', $comment);
+                            $insert_comment = "insert into comment (`user_id`, `post_id`, `comment_content`, `time`) values ('$coordinator_id', '$post_id', '$comment_new', CURRENT_TIMESTAMP)";
+                            mysqli_query($conn,$insert_comment);
+
                             
-                            $insert_comment = $conn->prepare("insert into comment (`user_id`, `post_id`, `comment_content`) values ('$coordinator_id', '$post_id', '$comment')");
-                            $insert_comment->bind_param('iis', $coordinator_id, $post_id, $comment );
-                            $insert_comment->execute();
-                            $insert_comment->close();
                         }
                     ?>
                     <div class="card">

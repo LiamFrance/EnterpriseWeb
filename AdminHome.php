@@ -37,11 +37,11 @@
     <title>Admin Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
         type="text/css">
 
@@ -67,7 +67,6 @@
             <div class="text-center">
                 <img src="img/avatar.png" class="rounded avatar mx-auto img-fluid" alt="...">
                 <h2><?php echo"Name: ", $admin_name ?></h2>
-                <div>DOB: 11/1/2011</div>
                 <div><?php echo"Email: ",$admin_email ?></div>
                 <div>Phone Number: 923874239</div>
                 <a href="logout.php">Log out</a>
@@ -85,6 +84,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#manager">Manager</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#guest">Guest</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#term">Term</a>
@@ -224,6 +226,47 @@
 
                         </table>
                     </div>
+                    <div id="guest" class="container tab-pane fade"><br>
+                        <h2>Manage Guest:</h2>
+                        <a href="add-guest.php" class="btn btn-primary btn-add"><i class="fas fa-plus"></i> Add New Guest</a>
+                        <table class="table table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Guest Name</th>
+                                    <th>Faculty</th>
+                                    <th>Email</th>
+                                    <th>Edit</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            <?php
+                $get_guest = "select * from user where user_role = 'Guest' ";
+                $run_guest = mysqli_query($conn,$get_guest);
+                while($guest_row = mysqli_fetch_array($run_guest)){
+                    $guest_id = $guest_row['user_id'];
+                    $guest_name = $guest_row['username'];
+                    $guest_faculty_id = $guest_row['faculty_id'];
+                    $guest_email=$guest_row['user_email'];
+                    $get_guest_faculty = "select faculty_name from faculty where faculty_id = $guest_faculty_id ";
+                                    $run_guest_faculty = mysqli_query($conn,$get_manager_faculty);
+                                    $result_guest = $run_manager_faculty->fetch_assoc();
+                                    $guest_faculty_name=$result_manager['faculty_name'];
+            ?>
+                                <tr>
+                                    <td><?php echo $guest_name ?></td>
+                                    <td><?php echo $guest_faculty_name ?></td>
+                                    <td><?php echo $guest_email ?></td>
+                                    <td><a href="manage-guest.php?user_id=<?php echo $guest_id; ?>" class="btn btn-outline-dark btn-sm"><i
+                                                class="fas fa-edit"></i></a></td>
+                                    <td><a href="deleteUser.php?user_id=<?php echo $guest_id; ?>" class="btn btn-outline-danger btn-sm"><i
+                                           onclick="return confirmDeleted();"    class="fas fa-trash-alt"></i></a></td>
+                                </tr>
+            <?php } ?>
+                            </tbody>
+
+                        </table>
+                    </div>
                     <div id="term" class="container tab-pane fade"><br>
                         <h2>Manage terms:</h2>
                         <a href="add-term.php" class="btn btn-primary btn-add"><i class="fas fa-plus"></i> Add New Term</a>
@@ -325,7 +368,7 @@
             }
         }
         function confirmDeleteTerm() {
-            var r = confirm("Are you sure you would like to delete this user ?");
+            var r = confirm("Are you sure you would like to delete this term ?");
             if (r) {
                 return true;
             } else {
