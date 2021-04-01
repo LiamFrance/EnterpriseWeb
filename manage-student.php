@@ -51,7 +51,7 @@
                 $error = "<br>Can't update user, please try again";
                 } else {
                     $msg = "Upadated $username successfully!";
-                    header("Location:AdminHome.php#coordinator?successfulUpdated");
+                     header("Location:AdminHome.php#student?successfulUpdated");
                 }
             }
         }

@@ -21,8 +21,9 @@
                         echo "<h1>Restricted area, please go back to the login page</h1>";
                         echo "<script>window.open('login.php','_self')</script>";
                 }
-            
- ?>
+
+	
+?>
 <html lang="en">
 
 <head>
@@ -35,7 +36,7 @@
     <title>Admin Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
     <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
@@ -72,9 +73,9 @@
             </div>
         </div>
         <!-- Right Content -->
-        <div class="content" id="upload_form">
-            <h2>Add Coordinator</h2>
-            <form action="add-coordinator.php" method ="POST" enctype="multipart/form-data">
+        <div class="content">
+            <h2>Add Guest</h2>
+            <form action="add-guest.php" method ="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="name">Username:</label>
                     <input type="text" class="form-control" name="username" id="username">
@@ -110,7 +111,7 @@
                 $query="select * from user where username = '$username' ";
                 $checkdup = mysqli_query($conn, $query);
                 if (!$nodup = $checkdup->fetch_assoc()) {          
-                    $sql="INSERT INTO `user`(`faculty_id`, `username`,`password`, `user_role`,`user_email`) VALUES ( '$fId','$username', '$pass','Coordinator', '$email')";
+                    $sql="INSERT INTO `user`(`faculty_id`, `username`,`password`, `user_role`,`user_email`) VALUES ( '$fId','$username', '$pass','Guest', '$email')";
                     $result = mysqli_query($conn,$sql);
                     if (!$result) {
                     $error = "<br>Can't add user, please try again";
@@ -127,7 +128,6 @@
             }
                 ?>
                 <button type="submit" value="add" name="submit" id="submit" class="btn btn-primary"><i class="far fa-save"></i> Save</button>
-                
                 <a href="AdminHome.php" class="btn btn-info"><i class="fas fa-home"></i> Back</a>
             </form>
 

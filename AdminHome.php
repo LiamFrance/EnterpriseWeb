@@ -1,19 +1,19 @@
 <?php 
-	session_start();
-	include("DatabaseConfig/DbConfig.php");
+    session_start();
+    include("DatabaseConfig/DbConfig.php");
 
-	if(!isset($_SESSION['id'])){
-		echo "<script>window.open('login.php','_self')</script>";
+    if(!isset($_SESSION['id'])){
+        echo "<script>window.open('login.php','_self')</script>";
 
-	}else{
-		$user_session = $_SESSION['id'];
+    }else{
+        $user_session = $_SESSION['id'];
 
-		$get_user = "select * from user where username = '$user_session'";
-		$run_user = mysqli_query($conn,$get_user);
-		$row_user = mysqli_fetch_array($run_user);
+        $get_user = "select * from user where username = '$user_session'";
+        $run_user = mysqli_query($conn,$get_user);
+        $row_user = mysqli_fetch_array($run_user);
 
-		$admin_name = $row_user['username'];
-		$admin_role = $row_user['user_role'];
+        $admin_name = $row_user['username'];
+        $admin_role = $row_user['user_role'];
                 $admin_email = $row_user['user_email'];
                 if($admin_role!='Admin'){
                         session_start();
@@ -22,7 +22,7 @@
                         echo "<script>window.open('login.php','_self')</script>";
                 }
 
-	
+    
  ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -85,6 +85,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#manager">Manager</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#guest">Guest</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#term">Term</a>
@@ -224,6 +227,47 @@
 
                         </table>
                     </div>
+                    <div id="guest" class="container tab-pane fade"><br>
+                        <h2>Manage Guest:</h2>
+                        <a href="add-guest.php" class="btn btn-primary btn-add"><i class="fas fa-plus"></i> Add New Guest</a>
+                        <table class="table table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Guest Name</th>
+                                    <th>Faculty</th>
+                                    <th>Email</th>
+                                    <th>Edit</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            <?php
+                $get_guest = "select * from user where user_role = 'Guest' ";
+                $run_guest = mysqli_query($conn,$get_guest);
+                while($guest_row = mysqli_fetch_array($run_guest)){
+                    $guest_id = $guest_row['user_id'];
+                    $guest_name = $guest_row['username'];
+                    $guest_faculty_id = $guest_row['faculty_id'];
+                    $guest_email=$guest_row['user_email'];
+                    $get_guest_faculty = "select faculty_name from faculty where faculty_id = $guest_faculty_id ";
+                                    $run_guest_faculty = mysqli_query($conn,$get_manager_faculty);
+                                    $result_guest = $run_manager_faculty->fetch_assoc();
+                                    $guest_faculty_name=$result_manager['faculty_name'];
+            ?>
+                                <tr>
+                                    <td><?php echo $guest_name ?></td>
+                                    <td><?php echo $guest_faculty_name ?></td>
+                                    <td><?php echo $guest_email ?></td>
+                                    <td><a href="manage-guest.php?user_id=<?php echo $guest_id; ?>" class="btn btn-outline-dark btn-sm"><i
+                                                class="fas fa-edit"></i></a></td>
+                                    <td><a href="deleteUser.php?user_id=<?php echo $guest_id; ?>" class="btn btn-outline-danger btn-sm"><i
+                                           onclick="return confirmDeleted();"    class="fas fa-trash-alt"></i></a></td>
+                                </tr>
+            <?php } ?>
+                            </tbody>
+
+                        </table>
+                    </div>
                     <div id="term" class="container tab-pane fade"><br>
                         <h2>Manage terms:</h2>
                         <a href="add-term.php" class="btn btn-primary btn-add"><i class="fas fa-plus"></i> Add New Term</a>
@@ -325,7 +369,7 @@
             }
         }
         function confirmDeleteTerm() {
-            var r = confirm("Are you sure you would like to delete this user ?");
+            var r = confirm("Are you sure you would like to delete this term ?");
             if (r) {
                 return true;
             } else {
