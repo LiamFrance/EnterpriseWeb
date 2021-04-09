@@ -2,11 +2,11 @@
 
 
 
-
 <body>
 
     <!-- Right Content -->
     <div class="content">
+        <a href="StudentHome.php?Student-Table" class="btn btn-info"><i class="fas fa-long-arrow-alt-left"></i> Back</a>
         <div class="content-stuff">
             <h2>View Your Submission:</h2>
             <a href="" style="font-size: 1.2rem;"><i class="far fa-file-alt"></i> Submission.txt </a>
@@ -53,6 +53,7 @@
                 <div class="card">
                     
                     <div class="card-header">Recent Comments</div>
+                    <div class="comment-group">
                     <?php 
                         $get_comment = "select * from comment where post_id = '$post_id' ";
                         $run_comment = mysqli_query($conn,$get_comment);
@@ -65,6 +66,7 @@
                           $user_role = $row_user['user_role'];
                           $comment = $row_comment['comment_content'];
                     ?>
+                    
                     <div class="card-body">
                         <div class="row">
                             <div class="col-1"><img src="http://placehold.it/80" class="rounded-circle img-fluid"
@@ -75,6 +77,7 @@
                             </div>
 
                         </div>
+                    </div>
                     </div>
                 <?php } ?>
                 </div>
@@ -89,10 +92,9 @@
 </div>
 
 
-
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor1/jquery/jquery.min.js"></script>
-    <script src="vendor1/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

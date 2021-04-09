@@ -1,21 +1,21 @@
 <?php 
-	session_start();
-	include("DatabaseConfig/DbConfig.php");
-	if(!isset($_SESSION['id'])){
-		echo "<script>window.open('login.php','_self')</script>";
+  session_start();
+  include("DatabaseConfig/DbConfig.php");
+  if(!isset($_SESSION['id'])){
+    echo "<script>window.open('login.php','_self')</script>";
 
-	}else{
-		$coordinator_session = $_SESSION['id'];
+  }else{
+    $coordinator_session = $_SESSION['id'];
 
 
-		$get_coordinator = "select * from user where username = '$coordinator_session'";
-		$run_coordinator = mysqli_query($conn,$get_coordinator);
-		$row_coordinator = mysqli_fetch_array($run_coordinator);
+    $get_coordinator = "select * from user where username = '$coordinator_session'";
+    $run_coordinator = mysqli_query($conn,$get_coordinator);
+    $row_coordinator = mysqli_fetch_array($run_coordinator);
 
-		$coordinator_name = $row_coordinator['username'];
+    $coordinator_name = $row_coordinator['username'];
     $coordinator_id = $row_coordinator['user_id'];
-		$coordinator_role = $row_coordinator['user_role'];
-		$coordinator_email = $row_coordinator['user_email'];
+    $coordinator_role = $row_coordinator['user_role'];
+    $coordinator_email = $row_coordinator['user_email'];
                 $coordinator_faculty = $row_coordinator['faculty_id'];
                 if($coordinator_role!='Coordinator'){
                         session_start();
@@ -23,8 +23,23 @@
                         echo "<h1>Restricted area, please go back to the login page</h1>";
                         echo "<script>window.open('login.php','_self')</script>";
                 }
-
-	
+    if (isset($_POST['checkSelected'])) {
+    $post_id=$_POST['postId'];
+    $query = "UPDATE post SET selected = '1' WHERE post_id = '$post_id'";
+    $prep = $conn->prepare($query);
+    $prep->execute();
+    header("Location: CoordinatorHome.php");
+    die("You've selected the post for publication <a href=' CoordinatorHome.php'>click here</a> to continue.");
+    }
+if (isset($_POST['checkNotSelected'])) {
+    $post_id=$_POST['postId'];
+    $query = "UPDATE post SET selected = '0' WHERE post_id = '$post_id'";
+    $prep = $conn->prepare($query);
+    $prep->execute();
+    header("Location: CoordinatorHome.php");
+    die("You've unselected the post for publication <a href=' CoordinatorHome.php'>click here</a> to continue.");
+    }
+  
  ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,11 +54,11 @@
   <title>Coordinator Page</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom fonts for this template -->
-  <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
   <!-- Custom styles for this template -->
@@ -57,7 +72,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Academy</a>
+        <a class="navbar-brand" href="CoordinatorHome.php">Academy</a>
       <i class="fas fa-user-alt"></i>
     </div>
   </nav>
@@ -68,7 +83,6 @@
       <div class="text-center">
         <img src="img/avatar.png" class="rounded avatar mx-auto img-fluid" alt="...">
         <h2><?php echo"Name: ", $coordinator_name ?></h2>
-        <div>DOB: 11/1/2011</div>
         <div><?php echo"Email: ",$coordinator_email ?></div>
         <div><?php echo"faculty_id: ",$coordinator_faculty ?></div>
         <div>Phone Number: 923874239</div>
@@ -82,7 +96,8 @@
      ?>
     <div class="content">
       <div class="content-stuff">
-        <h2>Student Works:</h2> 
+        <h2>Student Works:</h2>
+        <div class="table-responsive">
         <table class="table table-striped table-hover">
             <thead class="thead-dark">
                 <tr>
@@ -108,13 +123,13 @@
               ?>
               <tr>
                 <td><?php echo $student_id ?></td>
-                <td><?php echo "<img src='img/". $post_image . "' height='160' width='160'>" ?></td>
+                <td><?php echo "<img class='img-fluid' src='img/". $post_image . "' height='160' width='160'>" ?></td>
                 <td><?php echo "<a href='img/".$post_file." 'target='_blank'>".$post_file."</a>" ?></td>
                 <td><?php echo $term_id; ?></td>
                 <td> <a href="CoordinatorHome.php?submit-coordinator=<?php echo $post_id; ?>" class="btn btn-outline-dark btn-sm"><i class="fas fa-edit"></i></a></td>
-                <td><form id="selected" action="selectedPost.php" method="POST">
-                        <input type="hidden" name="postId" value="<?php echo $row_post['post_id'] ?>" />
-                        <input type="checkbox" name="checkSelected" v onclick="document.getElementById('selected').submit()"
+                <td><form id="selected" action="CoordinatorHome.php" method="POST">
+                        <input type="hidden" name="postId" value="<?php echo $post_id ?>" />
+                        <input type="checkbox" name="checkSelected" onchange="this.form.submit()"
                           <?php 
                         if($post_status=="1"){
                             echo "checked";
@@ -122,9 +137,9 @@
                         ?>     
                         >Selected
                     </form>
-                    <form id="notselected" action="unselectPost.php" method="POST">
-                    <input type="hidden" name="postId" value="<?php echo $row_post['post_id'] ?>" />
-                    <input type="checkbox" name="checkSelected" v onclick="document.getElementById('notselected').submit()"
+                    <form id="notselected" action="CoordinatorHome.php" method="POST">
+                    <input type="hidden" name="postId" value="<?php echo $post_id ?>" />
+                    <input type="checkbox" name="checkNotSelected" onchange="this.form.submit()"
                              <?php 
                         if($post_status=="0"){
                             echo "checked";
@@ -138,6 +153,7 @@
               
             </tbody>
         </table>
+      </div>
       </div>
     </div>
   

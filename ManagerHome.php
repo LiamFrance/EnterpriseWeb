@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    include("DatabaseConfig/DbConfig.php");
+    include("DatabaseConfig/dbConfig.php");
 
     if(!isset($_SESSION['id'])){
         echo "<script>window.open('login.php','_self')</script>";
@@ -14,6 +14,7 @@
 
         $user_name = $row_user['username'];
         $user_role = $row_user['user_role'];
+        $email = $row_user['user_email'];
                 if($user_role!='Manager'){
                         session_start();
                         session_destroy();
@@ -39,11 +40,11 @@ if (isset($_POST['selectTerm'])) {
     <title>Manager Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
         type="text/css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -59,7 +60,7 @@ if (isset($_POST['selectTerm'])) {
     <!-- Navigation -->
     <nav class="navbar navbar-light bg-light static-top">
         <div class="container">
-            <a class="navbar-brand" href="#">Academy</a>
+            <a class="navbar-brand" href="ManagerHome.php">Academy</a>
             <i class="fas fa-user-alt"></i>
         </div>
     </nav>
@@ -69,9 +70,8 @@ if (isset($_POST['selectTerm'])) {
         <div class="sidebar">
             <div class="text-center">
                 <img src="img/avatar.png" class="rounded avatar mx-auto img-fluid" alt="...">
-                <h2>Name: Tuz</h2>
-                <div>DOB: 11/1/2011</div>
-                <div>Email: tuz@email.com</div>
+                <h2><?php echo "Name: ", $user_name ?></h2>
+                <div><?php echo "Email: ", $email ?></div>
                 <div>Phone Number: 923874239</div>
                 <a href="logout.php">Log out</a>
             </div>
@@ -92,6 +92,7 @@ if (isset($_POST['selectTerm'])) {
                 <div class="tab-content">
                     <div id="submission" class="container tab-pane active"><br>
                         <h2>Student Works:</h2>
+                        <div class="table-responsive">
                         <table class="table table-striped table-hover">
                             <thead class="thead-dark">
                                 <tr>
@@ -115,19 +116,20 @@ if (isset($_POST['selectTerm'])) {
                               ?>
                                 <tr>
                                     <td><?php echo $student_id ?></td>
-                                    <td><?php echo "<img src='img/". $post_image . "' height='160' width='160'>" ?></td>
+                                    <td><?php echo "<img class='img-fluid' src='img/". $post_image . "' height='160' width='160'>" ?></td>
                                     <td><?php echo "<a href='img/".$post_file." 'target='_blank'>".$post_file."</a>" ?></td>
                                     <td><?php echo $term_id; ?></td>
                                 </tr>
                             <?php } ?>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                     <!-- Chart-->
                     <div id="stats" class="container tab-pane fade"><br>
                         <h2>Total of post submitted</h2>
                         <div>
-                            <form name="filterTerm" method="POST" action="ManagerHome.php">
+                            <form name="filterTerm" method="POST" action="ManagerHome.php#stats">
                             <select name="selectTerm" id="selectTerm" onchange="this.form.submit()">
                                 <?php 
                     $query = "SELECT * FROM term";
@@ -348,11 +350,56 @@ if (isset($_POST['selectTerm'])) {
             }
         })
     </script>
+    <footer class="footer bg-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
+                    <ul class="list-inline mb-2">
+                        <li class="list-inline-item">
+                            <a href="#">About</a>
+                        </li>
+                        <li class="list-inline-item"> </li>
+                        <li class="list-inline-item">
+                            <a href="#">Contact</a>
+                        </li>
+                        <li class="list-inline-item"> </li>
+                        <li class="list-inline-item">
+                            <a href="#">Terms of Use</a>
+                        </li>
+                        <li class="list-inline-item"> </li>
+                        <li class="list-inline-item">
+                            <a href="#">Privacy Policy</a>
+                        </li>
+                    </ul>
+                    <p class="text-muted small mb-4 mb-lg-0">&copy; All Rights Reserved.</p>
+                </div>
+                <div class="col-lg-6 h-100 text-center text-lg-right my-auto">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item mr-3">
+                            <a href="#">
+                                <i class="fab fa-facebook fa-2x fa-fw"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item mr-3">
+                            <a href="#">
+                                <i class="fab fa-twitter-square fa-2x fa-fw"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#">
+                                <i class="fab fa-instagram fa-2x fa-fw"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 
     <!-- Footer -->
-    <script src="vendor1/jquery/jquery.min.js"></script>
-    <script src="vendor1/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

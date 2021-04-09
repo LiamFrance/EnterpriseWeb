@@ -1,5 +1,5 @@
 <?php 
-    include("DatabaseConfig/DbConfig.php");
+    include("DatabaseConfig/dbConfig.php");
 
     if(!isset($_SESSION['id'])){
         echo "<script>window.open('login.php','_self')</script>";
@@ -41,11 +41,11 @@
     <title>Student Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
         type="text/css">
 
@@ -63,6 +63,7 @@
     <div class="container">
         <!-- Right Content -->
         <div class="content">
+            <a href="CoordinatorHome.php" class="btn btn-info"><i class="fas fa-long-arrow-alt-left"></i> Back</a>
             <div class="content-stuff">
                 <h2>Mark Submission:</h2>
                 <a href="" style="font-size: 1.2rem;"><i class="far fa-file-alt"></i> Submission.txt </a>
@@ -112,7 +113,8 @@
                     ?>
                     <div class="card">
                         
-                        <div class="card-header">Recent Comments</div>
+                        <div class="card-header comment-group">Recent Comments</div>
+
                         <?php 
                             $get_comment = "select * from comment where post_id = '$post_id' ";
                             $run_comment = mysqli_query($conn,$get_comment);
@@ -125,6 +127,7 @@
                               $user_role = $row_user['user_role'];
                               $comment = $row_comment['comment_content'];
                         ?>
+                        
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-1"><img src="http://placehold.it/80" class="rounded-circle img-fluid"
@@ -136,6 +139,7 @@
 
                             </div>
                         </div>
+                        
                     <?php } ?>
                     </div>
 
@@ -147,11 +151,56 @@
         </div>
     </div>
     </div>
+    <footer class="footer bg-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
+                    <ul class="list-inline mb-2">
+                        <li class="list-inline-item">
+                            <a href="#">About</a>
+                        </li>
+                        <li class="list-inline-item"> </li>
+                        <li class="list-inline-item">
+                            <a href="#">Contact</a>
+                        </li>
+                        <li class="list-inline-item"> </li>
+                        <li class="list-inline-item">
+                            <a href="#">Terms of Use</a>
+                        </li>
+                        <li class="list-inline-item"> </li>
+                        <li class="list-inline-item">
+                            <a href="#">Privacy Policy</a>
+                        </li>
+                    </ul>
+                    <p class="text-muted small mb-4 mb-lg-0">&copy; All Rights Reserved.</p>
+                </div>
+                <div class="col-lg-6 h-100 text-center text-lg-right my-auto">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item mr-3">
+                            <a href="#">
+                                <i class="fab fa-facebook fa-2x fa-fw"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item mr-3">
+                            <a href="#">
+                                <i class="fab fa-twitter-square fa-2x fa-fw"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#">
+                                <i class="fab fa-instagram fa-2x fa-fw"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor1/jquery/jquery.min.js"></script>
-    <script src="vendor1/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

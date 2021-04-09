@@ -1,19 +1,19 @@
 <?php 
-	session_start();
-	include("DatabaseConfig/DbConfig.php");
+    session_start();
+    include("DatabaseConfig/dbConfig.php");
         $error = $msg = "";
-	if(!isset($_SESSION['id'])){
-		echo "<script>window.open('login.php','_self')</script>";
+    if(!isset($_SESSION['id'])){
+        echo "<script>window.open('login.php','_self')</script>";
 
-	}else{
-		$user_session = $_SESSION['id'];
+    }else{
+        $user_session = $_SESSION['id'];
 
-		$get_user = "select * from user where username = '$user_session'";
-		$run_user = mysqli_query($conn,$get_user);
-		$row_user = mysqli_fetch_array($run_user);
+        $get_user = "select * from user where username = '$user_session'";
+        $run_user = mysqli_query($conn,$get_user);
+        $row_user = mysqli_fetch_array($run_user);
 
-		$admin_name = $row_user['username'];
-		$admin_role = $row_user['user_role'];
+        $admin_name = $row_user['username'];
+        $admin_role = $row_user['user_role'];
                 $admin_email = $row_user['user_email'];
                 if($admin_role!='Admin'){
                         session_start();
@@ -21,7 +21,12 @@
                         echo "<h1>Restricted area, please go back to the login page</h1>";
                         echo "<script>window.open('login.php','_self')</script>";
                 }
-                
+    function passwordToToken($password){
+    global $salt1;
+    global $salt2;
+    $token = hash ("ripemd128", "$salt1$password$salt2");
+    return $token;
+    }               
     if (isset($_GET['user_id'])) {
         $user_id = $_GET['user_id'];
         //Load the current data to that batch
@@ -42,20 +47,21 @@
         $newUsername = $_POST['username'];
         $newPass = $_POST['password'];
         $newEmail=$_POST['email'];
+        $token = passwordToToken($newPass);
         $query="select * from user where username = '$newUsername'and user_email='$newEmail' ";
         $checkdup = mysqli_query($conn, $query);
             if (!$nodup = $checkdup->fetch_assoc()) {          
-                $sql = "UPDATE user SET faculty_id = '$newFID', username = '$newUsername', password = '$newPass' , user_email ='$newEmail' WHERE user_id = '$newUserId'";
+                $sql = "UPDATE user SET faculty_id = '$newFID', username = '$newUsername', password = '$token' , user_email ='$newEmail' WHERE user_id = '$newUserId'";
                 $result = mysqli_query($conn,$sql);
                 if (!$result) {
                 $error = "<br>Can't update user, please try again";
                 } else {
                     $msg = "Upadated $username successfully!";
-                     header("Location:AdminHome.php#student?successfulUpdated");
+                    header("Location:AdminHome.php#student?successfulUpdated");
                 }
             }
         }
-	           
+               
  ?>
 <html lang="en">
 
@@ -69,11 +75,11 @@
     <title>Admin Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
         type="text/css">
 
@@ -88,7 +94,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-light bg-light static-top">
         <div class="container">
-            <a class="navbar-brand" href="#">Academy</a>
+            <a class="navbar-brand" href="AdminHome.php">Academy</a>
             <i class="fas fa-user-alt"></i>
         </div>
     </nav>
@@ -100,7 +106,6 @@
             <div class="text-center">
                 <img src="img/avatar.png" class="rounded avatar mx-auto img-fluid" alt="...">
                 <h2><?php echo"Name: ", $admin_name ?></h2>
-                <div>DOB: 11/1/2011</div>
                 <div><?php echo"Email: ",$admin_email ?></div>
                 <div>Phone Number: 923874239</div>
             </div>
@@ -214,8 +219,8 @@
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor1/jquery/jquery.min.js"></script>
-    <script src="vendor1/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

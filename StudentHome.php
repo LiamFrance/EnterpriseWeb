@@ -1,7 +1,10 @@
 <?php 
-	session_start();
+  session_start();
         include ('sendMail.php');
-	include("DatabaseConfig/DbConfig.php");
+  include("DatabaseConfig/dbConfig.php");
+    define('DBINFO', 'mysql:host=localhost;dbname=comp1640');
+    define('DBUSER','root');
+    define('DBPASS','');
 
     function fetchAll($query){
         $con = new PDO(DBINFO, DBUSER, DBPASS);
@@ -18,20 +21,20 @@
         }
     }
     
-	if(!isset($_SESSION['id'])){
-		echo "<script>window.open('login.php','_self')</script>";
+  if(!isset($_SESSION['id'])){
+    echo "<script>window.open('login.php','_self')</script>";
 
-	}else{
-		$student_session = $_SESSION['id'];
+  }else{
+    $student_session = $_SESSION['id'];
 
-		$get_student = "select * from user where username = '$student_session'";
-		$run_student = mysqli_query($conn,$get_student);
-		$row_student = mysqli_fetch_array($run_student);
+    $get_student = "select * from user where username = '$student_session'";
+    $run_student = mysqli_query($conn,$get_student);
+    $row_student = mysqli_fetch_array($run_student);
 
-		$student_name = $row_student['username'];
-		$student_role = $row_student['user_role'];
-		$student_email = $row_student['user_email'];
-		$id = $row_student['user_id'];
+    $student_name = $row_student['username'];
+    $student_role = $row_student['user_role'];
+    $student_email = $row_student['user_email'];
+    $id = $row_student['user_id'];
                 $student_faculty = $row_student['faculty_id'];
                 if($student_role!='Student'){
                         session_start();
@@ -181,11 +184,11 @@ if(isset($_POST['submit'])){
   <title>Student Page</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom fonts for this template -->
-  <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
   <!-- Custom styles for this template -->
@@ -199,7 +202,7 @@ if(isset($_POST['submit'])){
   <!-- Navigation -->
   <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Academy</a>
+        <a class="navbar-brand" href="StudentHome.php">Academy</a>
       <i class="fas fa-user-alt"></i>
     </div>
   </nav>
@@ -228,29 +231,29 @@ if(isset($_POST['submit'])){
      ?>
     <div class="content">
       <div class="content-stuff">
-      	<form id="upload_form" method="post" enctype="multipart/form-data">
+        <form id="upload_form" method="post" enctype="multipart/form-data">
             <?php 
                  if (($now) < ($deadline)){
                     
                  ?>
-	        <h2>Submit your work:</h2>
+          <h2>Submit your work:</h2>
                 <?php echo $msg; ?>
                 <?php echo "<h5>Deadline is ".$term_deadline."<br> Description:".$term_description."</h5>"; ?>
                 <input type="hidden" name="termId" value="<?php echo $term_id ?>" />
-	        <h5>Submit your image:</h5>
+          <h5>Submit your image:</h5>
                 <input type="file" name="imageFile" class="btn btn-outline-primary" id="file" accept="image/*">
                 <?php echo $ImageError; ?>
-	        <h5>Submit your document:</h5>
-	         <input type="file" name="documentFile" class="btn btn-outline-primary" id="file" accept=".pdf,.docx,.doc,.zip,.rar">
+          <h5>Submit your document:</h5>
+           <input type="file" name="documentFile" class="btn btn-outline-primary" id="file" accept=".pdf,.docx,.doc,.zip,.rar">
                  <?php echo $FileError; ?>
-	        <div class="form-group form-check">
-	          <label class="form-check-label">
-	            <input class="form-check-input" name="check" type="checkbox"> Agree to the <span style="text-decoration: underline"><a> term and services</a> </span>before uploading your work
-	          <?php echo $AgreeError; ?>
+          <div class="form-group form-check">
+            <label class="form-check-label">
+              <input class="form-check-input" name="check" type="checkbox"> Agree to the <span style="text-decoration: underline"><a> term and services</a> </span>before uploading your work
+            <?php echo $AgreeError; ?>
                   </label>
-	        </div>
+          </div>
          
-	        <button type="submit" value="submit" name="submit" id="submit" class="btn btn-primary">Upload your submission</button>
+          <button type="submit" value="submit" name="submit" id="submit" class="btn btn-primary">Upload your submission</button>
                 <?php
                  }else{
                     $deadlineMsg="<p>You have missed the deadline</p>";  
@@ -258,18 +261,18 @@ if(isset($_POST['submit'])){
                     echo $deadlineMsg;
                  ?>                
           <a href="StudentHome.php?Student-Table" class="btn btn-outline-primary">View Your Submission</a>
-    	</form>
+      </form>
       </div>
     </div>
   <?php } ?>
   </div>
  
-
+ <?php include("Footer.php") ?>
 
 
   <!-- Bootstrap core JavaScript -->
-  <script src="vendor1/jquery/jquery.min.js"></script>
-  <script src="vendor1/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
