@@ -85,7 +85,6 @@ if (isset($_POST['checkNotSelected'])) {
         <h2><?php echo"Name: ", $coordinator_name ?></h2>
         <div><?php echo"Email: ",$coordinator_email ?></div>
         <div><?php echo"faculty_id: ",$coordinator_faculty ?></div>
-        <div>Phone Number: 923874239</div>
         <a href="logout.php">Log out</a>
       </div>
     </div>
@@ -126,7 +125,29 @@ if (isset($_POST['checkNotSelected'])) {
                 <td><?php echo "<img class='img-fluid' src='img/". $post_image . "' height='160' width='160'>" ?></td>
                 <td><?php echo "<a href='img/".$post_file." 'target='_blank'>".$post_file."</a>" ?></td>
                 <td><?php echo $term_id; ?></td>
-                <td> <a href="CoordinatorHome.php?submit-coordinator=<?php echo $post_id; ?>" class="btn btn-outline-dark btn-sm"><i class="fas fa-edit"></i></a></td>
+                <td> <a href="CoordinatorHome.php?submit-coordinator=<?php echo $post_id; ?>" class="btn btn-outline-dark btn-sm"><i class="fas fa-edit"></i></a>
+                  <?php
+                    $commented=null;
+                date_default_timezone_set("Asia/Ho_Chi_Minh");
+                $date_now=date("Y-m-d H:i:s");
+                $now= strtotime($date_now);
+                $submit_date= strtotime($post_time);
+                $gap=abs($submit_date - $now)/60/60/24;
+                    $check_comment = "select * from comment where post_id = '$post_id'and user_id='$coordinator_id' ";
+                            $run_check_comment = mysqli_query($conn,$check_comment);
+                            if(empty($row_check_comment = mysqli_fetch_array($run_check_comment))){
+                                if (floor($gap)>14){
+                                    $late=floor($gap)-14;
+                                    echo "No comment in ".floor($gap)." days (".$late." days late)";
+                                }elseif (floor($gap)<14){
+                                    $time_left=14-floor($gap);
+                                    echo "No comment in ".floor($gap)." days (".$time_left." days left)" ;
+                                }
+                            }else{
+                                echo "Yes";
+                            }
+                    ?>
+                </td>
                 <td><form id="selected" action="CoordinatorHome.php" method="POST">
                         <input type="hidden" name="postId" value="<?php echo $post_id ?>" />
                         <input type="checkbox" name="checkSelected" onchange="this.form.submit()"
