@@ -8,8 +8,9 @@
   }else{
  ?>
 <div class="content">
+    <a href="StudentHome.php" class="btn btn-info"><i class="fas fa-long-arrow-alt-left"></i> Back</a>
   <div class="content-stuff">
-    <h2>Student Works:</h2> 
+    <div class="table-responsive">
     <table class="table table-striped table-hover">
         <thead class="thead-dark">
             <tr>
@@ -34,7 +35,7 @@
           ?>
           <tr>
             <td><?php echo $student_id ?></td>
-            <td><?php echo "<img src='img/". $post_image . "' height='160' width='160'>" ?></td>
+            <td><?php echo "<img class='img-fluid' src='img/". $post_image . "' height='160' width='160'>" ?></td>
             <td><?php echo "<a href='img/".$post_file." 'target='_blank'>".$post_file."</a>" ?></td>
             <td><?php echo $term_id; ?></td>
             <td> <a href="StudentHome.php?submit-student=<?php echo $post_id; ?>" class="btn btn-outline-dark btn-sm"><i class="fas fa-edit"></i></a></td>
@@ -43,6 +44,7 @@
           
         </tbody>
     </table>
+    </div>
   </div>
 </div>
   

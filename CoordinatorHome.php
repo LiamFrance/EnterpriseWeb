@@ -13,7 +13,7 @@
 		$row_coordinator = mysqli_fetch_array($run_coordinator);
 
 		$coordinator_name = $row_coordinator['username'];
-    $coordinator_id = $row_coordinator['user_id'];
+                $coordinator_id = $row_coordinator['user_id'];
 		$coordinator_role = $row_coordinator['user_role'];
 		$coordinator_email = $row_coordinator['user_email'];
                 $coordinator_faculty = $row_coordinator['faculty_id'];
@@ -23,7 +23,24 @@
                         echo "<h1>Restricted area, please go back to the login page</h1>";
                         echo "<script>window.open('login.php','_self')</script>";
                 }
-
+    if (isset($_POST['checkSelected'])) {
+    $post_id=$_POST['postId'];
+    $query = "UPDATE post SET selected = '1' WHERE post_id = '$post_id'";
+    $prep = $conn->prepare($query);
+    $prep->execute();
+    header("Location: CoordinatorHome.php");
+    die("You've selected the post for publication <a href=' CoordinatorHome.php'>click here</a> to continue.");
+    }
+if (isset($_POST['checkNotSelected'])) {
+    $post_id=$_POST['postId'];
+    $query = "UPDATE post SET selected = '0' WHERE post_id = '$post_id'";
+    $prep = $conn->prepare($query);
+    $prep->execute();
+    header("Location: CoordinatorHome.php");
+    die("You've unselected the post for publication <a href=' CoordinatorHome.php'>click here</a> to continue.");
+    }
+            
+            
 	
  ?>
 <!DOCTYPE html>
@@ -57,7 +74,7 @@
   <!-- Navigation -->
   <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Academy</a>
+        <a class="navbar-brand" href="CoordinatorHome.php">Academy</a>
       <i class="fas fa-user-alt"></i>
     </div>
   </nav>
@@ -70,7 +87,7 @@
         <h2><?php echo"Name: ", $coordinator_name ?></h2>
         <div><?php echo"Email: ",$coordinator_email ?></div>
         <div><?php echo"faculty_id: ",$coordinator_faculty ?></div>
-        <div>Phone Number: 923874239</div>
+        
         <a href="logout.php">Log out</a>
       </div>
     </div>
@@ -81,7 +98,8 @@
      ?>
     <div class="content">
       <div class="content-stuff">
-        <h2>Student Works:</h2> 
+        <h2>Student Works:</h2>
+        <div class="table-responsive">
         <table class="table table-striped table-hover">
             <thead class="thead-dark">
                 <tr>
@@ -90,6 +108,7 @@
                     <th>Document</th>
                     <th>Term</th>
                     <th>Comment</th>
+                    
                     <th>For publication</th>
                 </tr>
             </thead>
@@ -104,16 +123,40 @@
                   $post_image = $row_post['post_image'];
                   $post_file = $row_post['post_file'];
                   $post_status = $row_post['selected'];
+                  $post_time=$row_post['submit_date'];
               ?>
               <tr>
                 <td><?php echo $student_id ?></td>
-                <td><?php echo "<img src='img/". $post_image . "' height='160' width='160'>" ?></td>
+                <td><?php echo "<img class='img-fluid' src='img/". $post_image . "' height='160' width='160'>" ?></td>
                 <td><?php echo "<a href='img/".$post_file." 'target='_blank'>".$post_file."</a>" ?></td>
                 <td><?php echo $term_id; ?></td>
-                <td> <a href="CoordinatorHome.php?submit-coordinator=<?php echo $post_id; ?>" class="btn btn-outline-dark btn-sm"><i class="fas fa-edit"></i></a></td>
-                <td><form id="selected" action="selectedPost.php" method="POST">
+                <td> <a href="CoordinatorHome.php?submit-coordinator=<?php echo $post_id; ?>" class="btn btn-outline-dark btn-sm"><i class="fas fa-edit"></i></a>
+                  <?php
+                    $commented=null;
+                date_default_timezone_set("Asia/Ho_Chi_Minh");
+                $date_now=date("Y-m-d H:i:s");
+                $now= strtotime($date_now);
+                $submit_date= strtotime($post_time);
+                $gap=abs($submit_date - $now)/60/60/24;
+                    $check_comment = "select * from comment where post_id = '$post_id'and user_id='$coordinator_id' ";
+                            $run_check_comment = mysqli_query($conn,$check_comment);
+                            if(empty($row_check_comment = mysqli_fetch_array($run_check_comment))){
+                                if (floor($gap)>14){
+                                    $late=floor($gap)-14;
+                                    echo "No comment in ".floor($gap)." days (".$late." days late)";
+                                }elseif (floor($gap)<14){
+                                    $time_left=14-floor($gap);
+                                    echo "No comment in ".floor($gap)." days (".$time_left." days left)" ;
+                                }
+                            }else{
+                                echo "Yes";
+                            }
+                    ?>
+                </td>
+               
+                <td><form id="selected" action="CoordinatorHome.php" method="POST">
                         <input type="hidden" name="postId" value="<?php echo $post_id ?>" />
-                        <input type="checkbox" name="checkSelected" v onclick="document.getElementById('selected').submit()"
+                        <input type="checkbox" name="checkSelected" onchange="this.form.submit()"
                           <?php 
                         if($post_status=="1"){
                             echo "checked";
@@ -121,9 +164,9 @@
                         ?>     
                         >Selected
                     </form>
-                    <form id="notselected" action="unselectPost.php" method="POST">
+                    <form id="notselected" action="CoordinatorHome.php" method="POST">
                     <input type="hidden" name="postId" value="<?php echo $post_id ?>" />
-                    <input type="checkbox" name="checkSelected" v onclick="document.getElementById('notselected').submit()"
+                    <input type="checkbox" name="checkNotSelected" onchange="this.form.submit()"
                              <?php 
                         if($post_status=="0"){
                             echo "checked";
@@ -137,6 +180,7 @@
               
             </tbody>
         </table>
+      </div>
       </div>
     </div>
   

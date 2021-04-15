@@ -1,6 +1,12 @@
 <?php
   session_start();
-  include 'DatabaseConfig/dbConfig.php';  
+  include 'DatabaseConfig/dbConfig.php';
+    function passwordToToken($password){
+    global $salt1;
+    global $salt2;
+    $token = hash ("ripemd128", "$salt1$password$salt2");
+    return $token;
+}  
 ?>
 
 <!DOCTYPE html>
@@ -55,8 +61,8 @@
 
                           $username = $_POST['username'];
                           $pass = $_POST['password'];
-
-                          $sql = "SELECT * FROM user WHERE username = '$username' AND password = '$pass'";
+                          $token = passwordToToken($pass);
+                          $sql = "SELECT * FROM user WHERE username = '$username' AND password = '$token'";
                           $result = mysqli_query($conn, $sql)  or die("Could not connect database " .mysqli_error($conn));
 
                           if (!$row = $result->fetch_assoc()) {
@@ -91,8 +97,8 @@
 
           $username = $_POST['username'];
           $pass = $_POST['password'];
-
-          $sql = "SELECT * FROM user WHERE username = '$username' AND password = '$pass'";
+          $token = passwordToToken($pass);
+          $sql = "SELECT * FROM user WHERE username = '$username' AND password = '$token'";
           $result = mysqli_query($conn, $sql)  or die("Could not connect database " .mysqli_error($conn));
 
           if (!$row = $result->fetch_assoc()) {

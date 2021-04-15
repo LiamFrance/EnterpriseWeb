@@ -24,6 +24,38 @@
                         echo "<script>window.open('login.php','_self')</script>";
                 }
 
+        if(isset($_GET['submit-coordinator'])){
+                    $post_id = $_GET['submit-coordinator'];
+                    $get_post = "select * from post where post_id = '$post_id'";
+                    $run_post = mysqli_query($conn, $get_post);
+                    $row_post = mysqli_fetch_array($run_post);
+
+                    $p_id = $row_post['post_id'];
+                    $p_document = $row_post['post_file'];
+                    $p_user = $row_post['user_id'];
+                    $p_term=$row_post['term_id'];
+                    $p_time=$row_post['submit_date'];
+                    }else{
+                        echo"something wrong";
+                    }
+                $get_term = "select * from term where term_id=$p_term";
+                $run_term = mysqli_query($conn,$get_term);
+                while($term_row = mysqli_fetch_array($run_term)){
+                    $term_deadline = $term_row['term_deadline'];
+                }
+            $deadline= date('Y-m-d H:i:s', strtotime($term_deadline));
+            $deadlineMsg="";
+            $commented=null;
+            date_default_timezone_set("Asia/Ho_Chi_Minh");
+            $date_now=date("Y-m-d H:i:s");
+            $comment_date = date('Y-m-d H:i:s', strtotime($p_time . ' +14 day'));
+            $check_comment = "select * from comment where post_id = '$post_id' ";
+                            $run_check_comment = mysqli_query($conn,$check_comment);
+                            if(empty($row_check_comment = mysqli_fetch_array($run_check_comment))){
+                                $commented=false;
+                            }else{
+                                $commented=true;
+                            }
     
  ?>
 
@@ -63,43 +95,32 @@
     <div class="container">
         <!-- Right Content -->
         <div class="content">
+            <a href="CoordinatorHome.php" class="btn btn-info"><i class="fas fa-long-arrow-alt-left"></i> Back</a>
             <div class="content-stuff">
                 <h2>Mark Submission:</h2>
-                <a href="" style="font-size: 1.2rem;"><i class="far fa-file-alt"></i> Submission.txt </a>
-                <div class="form-group my-2">
-                    <input type="grade" class="form-control" placeholder="Current Grade: 0/100">
-                </div>
-                <button type="button" class="btn btn-primary my-1"><i class="fas fa-upload"></i> Upload
-                    Grade</button>
-                <a href="submit-student.html" class="btn btn-danger my-1 ml-1"><i class="far fa-trash-alt"></i> Remove
-                    Grade</a>
+                <a href="" style="font-size: 1.2rem;"><i class="far fa-file-alt"></i> <?php echo $p_document; ?> </a>
+            
             </div>
             <hr>
             <!-- Comment Section -->
             <div class="comment-section">
                 <h2>Comment Section:</h2>
                 <div class="form-group">
+                    <?php
+                        if($date_now<$comment_date && $commented==false){ 
+                            $deadlineMsg="<p>You have missed the deadline :".$comment_date."</p>";
+                        }elseif($date_now>$deadline){
+                            $deadlineMsg="<p>You have missed the deadline :".$deadline."</p>";
+                        }else{
+                    ?>
                     <form method="post">
                     <textarea name="comment" class="form-control" placeholder="Leave your comment here..." rows="3"></textarea>
                     <button type="submit" value="submit" name="submit" id="submit" class="btn btn-outline-primary my-2"><i class="fa fa-paper-plane"></i>
                         Submit</button>
                     </form>
-                    <?php
-                    if(isset($_GET['submit-coordinator'])){
-                        $post_id = $_GET['submit-coordinator'];
-                        $get_post = "select * from post where post_id = '$post_id'";
-                        $run_post = mysqli_query($conn, $get_post);
-                        $row_post = mysqli_fetch_array($run_post);
-
-                        $p_id = $row_post['post_id'];
-                        $p_document = $row_post['post_file'];
-                        $p_user = $row_post['user_id'];
-                    }
-                    else
-                    {
-                        echo"something wrong";
-                    } 
-                ?>
+                    <?php 
+                     }
+                    echo $deadlineMsg;?>
                     <?php 
                         if(isset($_POST['submit'])){
                             $comment = $_POST['comment'];
@@ -113,6 +134,7 @@
                     <div class="card">
                         
                         <div class="card-header">Recent Comments</div>
+
                         <?php 
                             $get_comment = "select * from comment where post_id = '$post_id' ";
                             $run_comment = mysqli_query($conn,$get_comment);
@@ -125,6 +147,7 @@
                               $user_role = $row_user['user_role'];
                               $comment = $row_comment['comment_content'];
                         ?>
+                        
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-1"><img src="http://placehold.it/80" class="rounded-circle img-fluid"
@@ -136,6 +159,7 @@
 
                             </div>
                         </div>
+                        
                     <?php } ?>
                     </div>
 
@@ -147,6 +171,51 @@
         </div>
     </div>
     </div>
+    <footer class="footer bg-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
+                    <ul class="list-inline mb-2">
+                        <li class="list-inline-item">
+                            <a href="#">About</a>
+                        </li>
+                        <li class="list-inline-item"> </li>
+                        <li class="list-inline-item">
+                            <a href="#">Contact</a>
+                        </li>
+                        <li class="list-inline-item"> </li>
+                        <li class="list-inline-item">
+                            <a href="#">Terms of Use</a>
+                        </li>
+                        <li class="list-inline-item"> </li>
+                        <li class="list-inline-item">
+                            <a href="#">Privacy Policy</a>
+                        </li>
+                    </ul>
+                    <p class="text-muted small mb-4 mb-lg-0">&copy; All Rights Reserved.</p>
+                </div>
+                <div class="col-lg-6 h-100 text-center text-lg-right my-auto">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item mr-3">
+                            <a href="#">
+                                <i class="fab fa-facebook fa-2x fa-fw"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item mr-3">
+                            <a href="#">
+                                <i class="fab fa-twitter-square fa-2x fa-fw"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#">
+                                <i class="fab fa-instagram fa-2x fa-fw"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 
     <!-- Bootstrap core JavaScript -->

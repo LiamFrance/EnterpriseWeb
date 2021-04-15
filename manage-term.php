@@ -78,7 +78,7 @@ $error = $msg = "";
     <!-- Navigation -->
     <nav class="navbar navbar-light bg-light static-top">
         <div class="container">
-            <a class="navbar-brand" href="#">Academy</a>
+            <a class="navbar-brand" href="AdminHome.php">Academy</a>
             <i class="fas fa-user-alt"></i>
         </div>
     </nav>
@@ -91,7 +91,7 @@ $error = $msg = "";
                 <img src="img/avatar.png" class="rounded avatar mx-auto img-fluid" alt="...">
                 <h2><?php echo"Name: ", $admin_name ?></h2>
                 <div><?php echo"Email: ",$admin_email ?></div>
-                <div>Phone Number: 923874239</div>
+                
             </div>
         </div>
         <!-- Right Content -->

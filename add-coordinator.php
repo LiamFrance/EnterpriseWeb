@@ -21,7 +21,12 @@
                         echo "<h1>Restricted area, please go back to the login page</h1>";
                         echo "<script>window.open('login.php','_self')</script>";
                 }
-            
+function passwordToToken($password){
+    global $salt1;
+    global $salt2;
+    $token = hash ("ripemd128", "$salt1$password$salt2");
+    return $token;
+}    
  ?>
 <html lang="en">
 
@@ -54,7 +59,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-light bg-light static-top">
         <div class="container">
-            <a class="navbar-brand" href="#">Academy</a>
+            <a class="navbar-brand" href="AdminHome.php">Academy</a>
             <i class="fas fa-user-alt"></i>
         </div>
     </nav>
@@ -67,7 +72,7 @@
                 <img src="img/avatar.png" class="rounded avatar mx-auto img-fluid" alt="...">
                 <h2><?php echo"Name: ", $admin_name ?></h2>
                 <div><?php echo"Email: ",$admin_email ?></div>
-                <div>Phone Number: 923874239</div>
+                >
             </div>
         </div>
         <!-- Right Content -->
@@ -108,8 +113,9 @@
                 $fId=$_POST['faculty'];
                 $query="select * from user where username = '$username' ";
                 $checkdup = mysqli_query($conn, $query);
-                if (!$nodup = $checkdup->fetch_assoc()) {          
-                    $sql="INSERT INTO `user`(`faculty_id`, `username`,`password`, `user_role`,`user_email`) VALUES ( '$fId','$username', '$pass','Coordinator', '$email')";
+                if (!$nodup = $checkdup->fetch_assoc()) { 
+                    $token = passwordToToken($pass);
+                    $sql="INSERT INTO `user`(`faculty_id`, `username`,`password`, `user_role`,`user_email`) VALUES ( '$fId','$username', '$token','Coordinator', '$email')";
                     $result = mysqli_query($conn,$sql);
                     if (!$result) {
                     $error = "<br>Can't add user, please try again";

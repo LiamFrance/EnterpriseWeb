@@ -21,11 +21,64 @@
                         echo "<h1>Restricted area, please go back to the login page</h1>";
                         echo "<script>window.open('login.php','_self')</script>";
                 }
+    
 if (isset($_POST['selectTerm'])) {
-    $filterTerm=$_POST['termID'];
+    if(!empty($filterTerm)) {
+        $filterTerm=$_POST['selectTerm'];
+    }else{
+        $filterTerm=$tID;
+    }
+    $filterTerm=$_POST['selectTerm'];
     header("Location: ManagerHome.php#stats");
     die("Term filtered");
 }
+
+function zipFilesAndDownload($term_id)
+{
+    include("DatabaseConfig/dbConfig.php");
+    $file_names = array();
+    $get_file = "select * from post where term_id=$term_id";
+    $run_file = mysqli_query($conn,$get_file);
+	while($row_file = mysqli_fetch_array($run_file)){
+	$post_image = $row_file['post_image'];
+	$post_file = $row_file['post_file'];
+        array_push($file_names, $post_file);
+        array_push($file_names, $post_image);
+    }
+    $archive_file_name='Submission.zip';
+    $file_path='img/';
+        //echo $file_path;die;
+    $zip = new ZipArchive();
+    //create the file and throw the error if unsuccessful
+    if ($zip->open($archive_file_name, ZIPARCHIVE::CREATE )!==TRUE) {
+        exit("cannot open <$archive_file_name>\n");
+    }
+    //add each files of $file_name array to archive
+    foreach($file_names as $files)
+    {
+        $zip->addFile($file_path.$files,$files);
+        //echo $file_path.$files,$files."
+
+    }
+    $zip->close();
+    //then send the headers to force download the zip file
+    header("Content-type: application/zip"); 
+    header("Content-Disposition: attachment; filename=$archive_file_name");
+    header("Content-length: " . filesize($archive_file_name));
+    header("Pragma: no-cache"); 
+    header("Expires: 0");
+    ob_clean();
+	flush();
+    readfile("$archive_file_name");
+    unlink($archive_file_name);
+    exit;
+}
+if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['Download']))
+    {
+        $term_id=$_POST['selectDownloadTerm'];
+        zipFilesAndDownload($term_id);
+    }
+
  ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,7 +94,7 @@ if (isset($_POST['selectTerm'])) {
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
+    
     <!-- Custom fonts for this template -->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
@@ -52,6 +105,8 @@ if (isset($_POST['selectTerm'])) {
     <!-- Custom styles for this template -->
     <link href="css/landing-page.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    
+
 
 </head>
 
@@ -60,7 +115,7 @@ if (isset($_POST['selectTerm'])) {
     <!-- Navigation -->
     <nav class="navbar navbar-light bg-light static-top">
         <div class="container">
-            <a class="navbar-brand" href="#">Academy</a>
+            <a class="navbar-brand" href="ManagerHome.php">Academy</a>
             <i class="fas fa-user-alt"></i>
         </div>
     </nav>
@@ -72,7 +127,7 @@ if (isset($_POST['selectTerm'])) {
                 <img src="img/avatar.png" class="rounded avatar mx-auto img-fluid" alt="...">
                 <h2><?php echo "Name: ", $user_name ?></h2>
                 <div><?php echo "Email: ", $email ?></div>
-                <div>Phone Number: 923874239</div>
+                
                 <a href="logout.php">Log out</a>
             </div>
         </div>
@@ -92,6 +147,22 @@ if (isset($_POST['selectTerm'])) {
                 <div class="tab-content">
                     <div id="submission" class="container tab-pane active"><br>
                         <h2>Student Works:</h2>
+                        <form action="ManagerHome.php" method="POST">
+                            <label for="selectDownloadTerm">Choose which term's posts you want to download:</label>
+                            <select name="selectDownloadTerm" id="selectTerm">
+                                <?php 
+                            $query = "SELECT * FROM term";
+                            $terms = mysqli_query($conn,$query);
+                        while ($term= mysqli_fetch_array($terms)) {
+                            $tId = $term['0'];
+                            echo "<option value='$tId' selected >$tId</option>";
+                        }   
+                                ?>
+                            </select>
+                        <input type="hidden" name="termID" value="<?php echo $tId; ?>">
+                        <button class="btn btn-outline-dark btn-sm" type="submit" name="Download"><i class="fas fa-download"></i>Download all</button>
+                        </form>
+                        <div class="table-responsive">
                         <table class="table table-striped table-hover">
                             <thead class="thead-dark">
                                 <tr>
@@ -115,19 +186,20 @@ if (isset($_POST['selectTerm'])) {
 				              ?>
                                 <tr>
                                     <td><?php echo $student_id ?></td>
-                                    <td><?php echo "<img src='img/". $post_image . "' height='160' width='160'>" ?></td>
+                                    <td><?php echo "<img class='img-fluid' src='img/". $post_image . "' height='160' width='160'>" ?></td>
                                     <td><?php echo "<a href='img/".$post_file." 'target='_blank'>".$post_file."</a>" ?></td>
                                     <td><?php echo $term_id; ?></td>
                                 </tr>
                             <?php } ?>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                     <!-- Chart-->
                     <div id="stats" class="container tab-pane fade"><br>
                         <h2>Total of post submitted</h2>
                         <div>
-                            <form name="filterTerm" method="POST" action="ManagerHome.php">
+                            <form name="filterTerm" method="POST" action="ManagerHome.php#stats">
                             <select name="selectTerm" id="selectTerm" onchange="this.form.submit()">
                                 <?php 
                     $query = "SELECT * FROM term";
@@ -348,12 +420,56 @@ if (isset($_POST['selectTerm'])) {
             }
         })
     </script>
+    <footer class="footer bg-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 h-100 text-center text-lg-left my-auto">
+                    <ul class="list-inline mb-2">
+                        <li class="list-inline-item">
+                            <a href="#">About</a>
+                        </li>
+                        <li class="list-inline-item"> </li>
+                        <li class="list-inline-item">
+                            <a href="#">Contact</a>
+                        </li>
+                        <li class="list-inline-item"> </li>
+                        <li class="list-inline-item">
+                            <a href="#">Terms of Use</a>
+                        </li>
+                        <li class="list-inline-item"> </li>
+                        <li class="list-inline-item">
+                            <a href="#">Privacy Policy</a>
+                        </li>
+                    </ul>
+                    <p class="text-muted small mb-4 mb-lg-0">&copy; All Rights Reserved.</p>
+                </div>
+                <div class="col-lg-6 h-100 text-center text-lg-right my-auto">
+                    <ul class="list-inline mb-0">
+                        <li class="list-inline-item mr-3">
+                            <a href="#">
+                                <i class="fab fa-facebook fa-2x fa-fw"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item mr-3">
+                            <a href="#">
+                                <i class="fab fa-twitter-square fa-2x fa-fw"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#">
+                                <i class="fab fa-instagram fa-2x fa-fw"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 
     <!-- Footer -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
 </body>
 
 </html>

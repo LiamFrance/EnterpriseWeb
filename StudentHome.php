@@ -97,10 +97,8 @@ if(isset($_POST['submit'])){
                     $ImagePath="img/$realImageFile";
                     move_uploaded_file($ImageTempLocation, $ImagePath);
                     $ImageClear=true;
-                    }
-                else{
-                     $ImageError= "<p>The file size is too big</p>";
-                     
+                    }else{
+                     $ImageError= "<p>The file size is too big</p>";  
                 }
             }else{
                 $ImageError="<p>There is an error</p>";
@@ -161,7 +159,7 @@ if(isset($_POST['submit'])){
     } 
     if($UpdateClear===true){
         $title='New post';
-        $message="Student".$student_name." have updated their post";
+        $message="Student".$student_name." have updated their post <br> You have 14 days to comment on their post";
         $query ="select * from user where faculty_id = '$student_faculty' and user_role='Coordinator'";
         $result = mysqli_query($conn,$query);
         foreach(fetchAll($query) as $i){
@@ -202,7 +200,7 @@ if(isset($_POST['submit'])){
   <!-- Navigation -->
   <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
-      <a class="navbar-brand" href="#">Academy</a>
+        <a class="navbar-brand" href="StudentHome.php">Academy</a>
       <i class="fas fa-user-alt"></i>
     </div>
   </nav>
@@ -213,11 +211,11 @@ if(isset($_POST['submit'])){
       <div class="text-center">
         <img src="img/avatar.png" class="rounded avatar mx-auto img-fluid" alt="...">
         <h2><?php echo"Name: ",$student_name ?></h2>
-        <div>DOB: 11/1/2011</div>
+        
         <div><?php echo"Email: ", $student_email ?></div>
-        <div><?php echo $id  ?></div>
+        <div><?php echo"Student ID: ", $id  ?></div>
         <div><?php echo"Faculty ID : ", $student_faculty  ?></div>
-        <div>Phone Number: 923874239</div>
+        
         <a href="logout.php">Log out</a>
       </div>
     </div>
@@ -267,7 +265,7 @@ if(isset($_POST['submit'])){
   <?php } ?>
   </div>
  
-
+ <?php include("Footer.php") ?>
 
 
   <!-- Bootstrap core JavaScript -->
