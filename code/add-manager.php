@@ -1,6 +1,6 @@
 <?php 
 	session_start();
-	include("DatabaseConfig/dbConfig.php");
+	include("DatabaseConfig/DbConfig.php");
 
 	if(!isset($_SESSION['id'])){
 		echo "<script>window.open('login.php','_self')</script>";
@@ -26,7 +26,7 @@
     global $salt2;
     $token = hash ("ripemd128", "$salt1$password$salt2");
     return $token;
-}            
+}
 	
 ?>
 <html lang="en">
@@ -41,11 +41,11 @@
     <title>Admin Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
         type="text/css">
 
@@ -78,8 +78,8 @@
         </div>
         <!-- Right Content -->
         <div class="content">
-            <h2>Add Student</h2>
-            <form action="add-student.php" method ="POST" enctype="multipart/form-data">
+            <h2>Add Manager</h2>
+            <form action="add-manager.php" method ="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="name">Username:</label>
                     <input type="text" class="form-control" name="username" id="username">
@@ -116,7 +116,7 @@
                 $checkdup = mysqli_query($conn, $query);
                 if (!$nodup = $checkdup->fetch_assoc()) {
                     $token = passwordToToken($pass);
-                    $sql="INSERT INTO `user`(`faculty_id`, `username`,`password`, `user_role`,`user_email`) VALUES ( '$fId','$username', '$token','Student', '$email')";
+                    $sql="INSERT INTO `user`(`faculty_id`, `username`,`password`, `user_role`,`user_email`) VALUES ( '$fId','$username', '$token','Manager', '$email')";
                     $result = mysqli_query($conn,$sql);
                     if (!$result) {
                     $error = "<br>Can't add user, please try again";
@@ -189,8 +189,8 @@
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor1/jquery/jquery.min.js"></script>
+    <script src="vendor1/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

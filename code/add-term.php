@@ -1,6 +1,6 @@
 <?php 
 	session_start();
-	include("DatabaseConfig/dbConfig.php");
+	include("DatabaseConfig/DbConfig.php");
 
 	if(!isset($_SESSION['id'])){
 		echo "<script>window.open('login.php','_self')</script>";
@@ -21,14 +21,8 @@
                         echo "<h1>Restricted area, please go back to the login page</h1>";
                         echo "<script>window.open('login.php','_self')</script>";
                 }
-    function passwordToToken($password){
-    global $salt1;
-    global $salt2;
-    $token = hash ("ripemd128", "$salt1$password$salt2");
-    return $token;
-}            
-	
-?>
+            
+ ?>
 <html lang="en">
 
 <head>
@@ -41,11 +35,11 @@
     <title>Admin Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
         type="text/css">
 
@@ -77,46 +71,22 @@
             </div>
         </div>
         <!-- Right Content -->
-        <div class="content">
-            <h2>Add Student</h2>
-            <form action="add-student.php" method ="POST" enctype="multipart/form-data">
+        <div class="content" id="upload_form">
+            <h2>Add Term</h2>
+            <form action="add-term.php" method ="POST" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="name">Username:</label>
-                    <input type="text" class="form-control" name="username" id="username">
+                    <label for="TermDeadLine">Term deadline:</label>
+                    <input type="datetime-local" class="form-control" name="TermDeadLine" id="TermDeadLine">
                 </div>
                 <div class="form-group">
-                    <label for="faculty">Faculty:</label>
-                    <select class="form-control" id="faculty" name="faculty">
-                <?php
-                    $query = "SELECT * FROM faculty";
-                    $faculties = mysqli_query($conn,$query);
-                        while ($faculty= mysqli_fetch_array($faculties)) {
-                        $fId = $faculty['0'];
-                        $fName = $faculty['1'];
-                        echo "<option value='$fId'>$fName</option>";
-                    }
-                ?>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="dob">Password:</label>
-                    <input type="password" name="password" class="form-control"  id="password">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" name="email" class="form-control"  id="email">
+                    <label for="TermDescription">Term description:</label>
+                    <input type="text" name="TermDescription" class="form-control"  id="TermDescription">
                 </div>
                 <?php
             if(isset($_POST['submit'])) {
-                $username = $_POST['username'];
-                $pass = $_POST['password'];
-                $email=$_POST['email'];
-                $fId=$_POST['faculty'];
-                $query="select * from user where username = '$username' ";
-                $checkdup = mysqli_query($conn, $query);
-                if (!$nodup = $checkdup->fetch_assoc()) {
-                    $token = passwordToToken($pass);
-                    $sql="INSERT INTO `user`(`faculty_id`, `username`,`password`, `user_role`,`user_email`) VALUES ( '$fId','$username', '$token','Student', '$email')";
+                $deadline = $_POST['TermDeadLine'];
+                $description = $_POST['TermDescription']; 
+                    $sql="INSERT INTO `term`(`term_deadline`, `term_description`) VALUES ( '$deadline','$description')";
                     $result = mysqli_query($conn,$sql);
                     if (!$result) {
                     $error = "<br>Can't add user, please try again";
@@ -125,12 +95,11 @@
                         header("Location:AdminHome.php?successful");
                     }  
                 }else{
-                    echo ' <div class="alert alert-danger alert-dismissible fade show ">
-                              <small><strong>Error!</strong> This user have already existed.</small>
-                              <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            </div>';
+                    //echo ' <div class="alert alert-danger alert-dismissible fade show ">
+                              //<small><strong>Error!</strong> Something is wrong.</small>
+                              //<button type="button" class="close" data-dismiss="alert">&times;</button>
+                            //</div>';
                 }
-            }
                 ?>
                 <button type="submit" value="add" name="submit" id="submit" class="btn btn-primary"><i class="far fa-save"></i> Save</button>
                 <a href="AdminHome.php" class="btn btn-info"><i class="fas fa-home"></i> Back</a>
@@ -189,8 +158,8 @@
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor1/jquery/jquery.min.js"></script>
+    <script src="vendor1/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

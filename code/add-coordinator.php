@@ -1,6 +1,6 @@
 <?php 
 	session_start();
-	include("DatabaseConfig/dbConfig.php");
+	include("DatabaseConfig/DbConfig.php");
 
 	if(!isset($_SESSION['id'])){
 		echo "<script>window.open('login.php','_self')</script>";
@@ -21,14 +21,13 @@
                         echo "<h1>Restricted area, please go back to the login page</h1>";
                         echo "<script>window.open('login.php','_self')</script>";
                 }
-    function passwordToToken($password){
+function passwordToToken($password){
     global $salt1;
     global $salt2;
     $token = hash ("ripemd128", "$salt1$password$salt2");
     return $token;
-}            
-	
-?>
+}    
+ ?>
 <html lang="en">
 
 <head>
@@ -41,11 +40,11 @@
     <title>Admin Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
         type="text/css">
 
@@ -73,13 +72,13 @@
                 <img src="img/avatar.png" class="rounded avatar mx-auto img-fluid" alt="...">
                 <h2><?php echo"Name: ", $admin_name ?></h2>
                 <div><?php echo"Email: ",$admin_email ?></div>
-                
+                >
             </div>
         </div>
         <!-- Right Content -->
-        <div class="content">
-            <h2>Add Student</h2>
-            <form action="add-student.php" method ="POST" enctype="multipart/form-data">
+        <div class="content" id="upload_form">
+            <h2>Add Coordinator</h2>
+            <form action="add-coordinator.php" method ="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="name">Username:</label>
                     <input type="text" class="form-control" name="username" id="username">
@@ -114,9 +113,9 @@
                 $fId=$_POST['faculty'];
                 $query="select * from user where username = '$username' ";
                 $checkdup = mysqli_query($conn, $query);
-                if (!$nodup = $checkdup->fetch_assoc()) {
+                if (!$nodup = $checkdup->fetch_assoc()) { 
                     $token = passwordToToken($pass);
-                    $sql="INSERT INTO `user`(`faculty_id`, `username`,`password`, `user_role`,`user_email`) VALUES ( '$fId','$username', '$token','Student', '$email')";
+                    $sql="INSERT INTO `user`(`faculty_id`, `username`,`password`, `user_role`,`user_email`) VALUES ( '$fId','$username', '$token','Coordinator', '$email')";
                     $result = mysqli_query($conn,$sql);
                     if (!$result) {
                     $error = "<br>Can't add user, please try again";
@@ -133,6 +132,7 @@
             }
                 ?>
                 <button type="submit" value="add" name="submit" id="submit" class="btn btn-primary"><i class="far fa-save"></i> Save</button>
+                
                 <a href="AdminHome.php" class="btn btn-info"><i class="fas fa-home"></i> Back</a>
             </form>
 
@@ -189,8 +189,8 @@
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor1/jquery/jquery.min.js"></script>
+    <script src="vendor1/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

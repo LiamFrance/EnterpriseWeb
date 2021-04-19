@@ -1,7 +1,7 @@
 <?php 
 	session_start();
-	include("DatabaseConfig/dbConfig.php");
-
+	include("DatabaseConfig/DbConfig.php");
+        $error = $msg = "";
 	if(!isset($_SESSION['id'])){
 		echo "<script>window.open('login.php','_self')</script>";
 
@@ -26,9 +26,43 @@
     global $salt2;
     $token = hash ("ripemd128", "$salt1$password$salt2");
     return $token;
-}            
-	
-?>
+    }               
+    if (isset($_GET['user_id'])) {
+        $user_id = $_GET['user_id'];
+        //Load the current data to that batch
+        $query = "SELECT * FROM user WHERE user_id = '$user_id'";
+        $run_query = mysqli_query($conn, $query);
+        $row = mysqli_fetch_array($run_query);
+        if ($row) {
+            $faculty_id = $row['faculty_id'];
+            $username = $row['username'];
+            $password = $row['password'];
+            $email=$row['user_email'];
+        
+        }
+    }
+    if(isset($_POST['submit'])) {
+        $newUserId=$_POST['user_id'];
+        $newFID=$_POST['faculty'];
+        $newUsername = $_POST['username'];
+        $newPass = $_POST['password'];
+        $newEmail=$_POST['email'];
+        $token = passwordToToken($newPass);
+        $query="select * from user where username = '$newUsername'and user_email='$newEmail' ";
+        $checkdup = mysqli_query($conn, $query);
+            if (!$nodup = $checkdup->fetch_assoc()) {          
+                $sql = "UPDATE user SET faculty_id = '$newFID', username = '$newUsername', password = '$token' , user_email ='$newEmail' WHERE user_id = '$newUserId'";
+                $result = mysqli_query($conn,$sql);
+                if (!$result) {
+                $error = "<br>Can't update user, please try again";
+                } else {
+                    $msg = "Upadated $username successfully!";
+                    header("Location:AdminHome.php#student?successfulUpdated");
+                }
+            }
+        }
+	           
+ ?>
 <html lang="en">
 
 <head>
@@ -41,11 +75,11 @@
     <title>Admin Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
         type="text/css">
 
@@ -78,63 +112,59 @@
         </div>
         <!-- Right Content -->
         <div class="content">
-            <h2>Add Student</h2>
-            <form action="add-student.php" method ="POST" enctype="multipart/form-data">
+            <div class="content-stuff">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs">
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#info">Student Information</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    
+                    <div id="info" class="container"><br>
+                        <h2>Manage Student Information</h2>
+                <form action="manage-student.php" method ="POST" enctype="multipart/form-data">
+                    <input type="hidden" value="<?php echo $user_id; ?>" name="user_id"/>
                 <div class="form-group">
                     <label for="name">Username:</label>
-                    <input type="text" class="form-control" name="username" id="username">
+                    <input type="text" class="form-control" name="username" required value="<?php echo $username; ?>" id="username">
                 </div>
                 <div class="form-group">
                     <label for="faculty">Faculty:</label>
-                    <select class="form-control" id="faculty" name="faculty">
+                    <select class="form-control" id="faculty" required value="<?php echo $faculty_id; ?>"  name="faculty">
                 <?php
                     $query = "SELECT * FROM faculty";
                     $faculties = mysqli_query($conn,$query);
                         while ($faculty= mysqli_fetch_array($faculties)) {
                         $fId = $faculty['0'];
                         $fName = $faculty['1'];
-                        echo "<option value='$fId'>$fName</option>";
+                            if ($fId==$faculty_id){
+                                echo "<option value='$faculty_id' selected='selected'>$fName</option>";
+                            }else{
+                                echo "<option value='$fId'>$fName</option>";
+                        }
                     }
                 ?>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="dob">Password:</label>
-                    <input type="password" name="password" class="form-control"  id="password">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" class="form-control" required value="<?php echo $password; ?>" id="password">
                 </div>
                 <div class="form-group">
                     <label for="email">Email:</label>
-                    <input type="email" name="email" class="form-control"  id="email">
+                    <input type="email" name="email" class="form-control" required value="<?php echo $email; ?>" id="email">
                 </div>
-                <?php
-            if(isset($_POST['submit'])) {
-                $username = $_POST['username'];
-                $pass = $_POST['password'];
-                $email=$_POST['email'];
-                $fId=$_POST['faculty'];
-                $query="select * from user where username = '$username' ";
-                $checkdup = mysqli_query($conn, $query);
-                if (!$nodup = $checkdup->fetch_assoc()) {
-                    $token = passwordToToken($pass);
-                    $sql="INSERT INTO `user`(`faculty_id`, `username`,`password`, `user_role`,`user_email`) VALUES ( '$fId','$username', '$token','Student', '$email')";
-                    $result = mysqli_query($conn,$sql);
-                    if (!$result) {
-                    $error = "<br>Can't add user, please try again";
-                    } else {
-                        $msg = "Added $username successfully!";
-                        header("Location:AdminHome.php?successful");
-                    }  
-                }else{
-                    echo ' <div class="alert alert-danger alert-dismissible fade show ">
-                              <small><strong>Error!</strong> This user have already existed.</small>
-                              <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            </div>';
-                }
-            }
-                ?>
-                <button type="submit" value="add" name="submit" id="submit" class="btn btn-primary"><i class="far fa-save"></i> Save</button>
+                   <div><?php echo $msg; ?></div>
+                <button type="submit" value="update" name="submit" class="btn btn-primary"><i class="far fa-save"></i> Save</button>
                 <a href="AdminHome.php" class="btn btn-info"><i class="fas fa-home"></i> Back</a>
-            </form>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
         </div>
     </div>
@@ -189,8 +219,8 @@
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor1/jquery/jquery.min.js"></script>
+    <script src="vendor1/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

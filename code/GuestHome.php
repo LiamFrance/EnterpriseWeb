@@ -1,6 +1,6 @@
 <?php 
 	session_start();
-	include("DatabaseConfig/dbConfig.php");
+	include("DatabaseConfig/DbConfig.php");
 
 	if(!isset($_SESSION['id'])){
 		echo "<script>window.open('login.php','_self')</script>";
@@ -12,17 +12,17 @@
 		$run_user = mysqli_query($conn,$get_user);
 		$row_user = mysqli_fetch_array($run_user);
 
-		$admin_name = $row_user['username'];
-		$admin_role = $row_user['user_role'];
-                $admin_email = $row_user['user_email'];
-                if($admin_role!='Admin'){
+		$user_name = $row_user['username'];
+		$user_role = $row_user['user_role'];
+        $email = $row_user['user_email'];
+                if($user_role!='Guest'){
                         session_start();
                         session_destroy();
                         echo "<h1>Restricted area, please go back to the login page</h1>";
                         echo "<script>window.open('login.php','_self')</script>";
                 }
-            
  ?>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -32,16 +32,17 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Admin Page</title>
+    <title>Guest Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
         type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
     <!-- Custom styles for this template -->
     <link href="css/landing-page.css" rel="stylesheet">
@@ -54,63 +55,72 @@
     <!-- Navigation -->
     <nav class="navbar navbar-light bg-light static-top">
         <div class="container">
-            <a class="navbar-brand" href="AdminHome.php">Academy</a>
+            <a class="navbar-brand" href="GuestHome.php">Academy</a>
             <i class="fas fa-user-alt"></i>
         </div>
     </nav>
 
     <!-- Content -->
     <div class="grid-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="text-center">
                 <img src="img/avatar.png" class="rounded avatar mx-auto img-fluid" alt="...">
-                <h2><?php echo"Name: ", $admin_name ?></h2>
-                <div><?php echo"Email: ",$admin_email ?></div>
+                <h2><?php echo "Name: ", $user_name ?></h2>
+                <div><?php echo "Email: ", $email ?></div>
                 
+                <a href="logout.php">Log out</a>
             </div>
         </div>
-        <!-- Right Content -->
-        <div class="content" id="upload_form">
-            <h2>Add Term</h2>
-            <form action="add-term.php" method ="POST" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="TermDeadLine">Term deadline:</label>
-                    <input type="datetime-local" class="form-control" name="TermDeadLine" id="TermDeadLine">
-                </div>
-                <div class="form-group">
-                    <label for="TermDescription">Term description:</label>
-                    <input type="text" name="TermDescription" class="form-control"  id="TermDescription">
-                </div>
-                <?php
-            if(isset($_POST['submit'])) {
-                $deadline = $_POST['TermDeadLine'];
-                $description = $_POST['TermDescription']; 
-                    $sql="INSERT INTO `term`(`term_deadline`, `term_description`) VALUES ( '$deadline','$description')";
-                    $result = mysqli_query($conn,$sql);
-                    if (!$result) {
-                    $error = "<br>Can't add user, please try again";
-                    } else {
-                        $msg = "Added $username successfully!";
-                        header("Location:AdminHome.php?successful");
-                    }  
-                }else{
-                    //echo ' <div class="alert alert-danger alert-dismissible fade show ">
-                              //<small><strong>Error!</strong> Something is wrong.</small>
-                              //<button type="button" class="close" data-dismiss="alert">&times;</button>
-                            //</div>';
-                }
-                ?>
-                <button type="submit" value="add" name="submit" id="submit" class="btn btn-primary"><i class="far fa-save"></i> Save</button>
-                <a href="AdminHome.php" class="btn btn-info"><i class="fas fa-home"></i> Back</a>
-            </form>
+        <div class="content">
+            <div class="content-stuff">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#submission">Submission</a>
+                    </li>
+                </ul>
 
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div id="submission" class="container tab-pane active"><br>
+                        <h2>Student Works:</h2>
+                        <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Student's ID</th>
+                                    <th>Image</th>
+                                    <th>File</th>
+                                    <th>Term ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+				                $get_post = "select * from post where selected='1' ";
+				                $run_post = mysqli_query($conn,$get_post);
+				                while($row_post = mysqli_fetch_array($run_post)){
+				                  $post_id = $row_post['post_id'];
+				                  $term_id=$row_post['term_id'];
+				                  $student_id = $row_post['user_id'];
+				                  $post_image = $row_post['post_image'];
+				                  $post_file = $row_post['post_file'];
+				                  $post_status = $row_post['selected'];
+				              ?>
+                                <tr>
+                                    <td><?php echo $student_id ?></td>
+                                    <td><?php echo "<img class='img-fluid' src='img/". $post_image . "' height='160' width='160'>" ?></td>
+                                    <td><?php echo "<a href='img/".$post_file." 'target='_blank'>".$post_file."</a>" ?></td>
+                                    <td><?php echo $term_id; ?></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    </div>
-
-
-    <!-- Footer -->
+    </div>    
     <footer class="footer bg-dark">
         <div class="container">
             <div class="row">
@@ -157,9 +167,10 @@
         </div>
     </footer>
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Footer -->
+    <script src="vendor1/jquery/jquery.min.js"></script>
+    <script src="vendor1/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

@@ -1,19 +1,19 @@
 <?php 
-    session_start();
-    include("DatabaseConfig/DbConfig.php");
+	session_start();
+	include("DatabaseConfig/dbConfig.php");
 
-    if(!isset($_SESSION['id'])){
-        echo "<script>window.open('login.php','_self')</script>";
+	if(!isset($_SESSION['id'])){
+		echo "<script>window.open('login.php','_self')</script>";
 
-    }else{
-        $user_session = $_SESSION['id'];
+	}else{
+		$user_session = $_SESSION['id'];
 
-        $get_user = "select * from user where username = '$user_session'";
-        $run_user = mysqli_query($conn,$get_user);
-        $row_user = mysqli_fetch_array($run_user);
+		$get_user = "select * from user where username = '$user_session'";
+		$run_user = mysqli_query($conn,$get_user);
+		$row_user = mysqli_fetch_array($run_user);
 
-        $admin_name = $row_user['username'];
-        $admin_role = $row_user['user_role'];
+		$admin_name = $row_user['username'];
+		$admin_role = $row_user['user_role'];
                 $admin_email = $row_user['user_email'];
                 if($admin_role!='Admin'){
                         session_start();
@@ -40,11 +40,11 @@ function passwordToToken($password){
     <title>Admin Page</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="vendor1/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="vendor1/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
         type="text/css">
 
@@ -72,6 +72,7 @@ function passwordToToken($password){
                 <img src="img/avatar.png" class="rounded avatar mx-auto img-fluid" alt="...">
                 <h2><?php echo"Name: ", $admin_name ?></h2>
                 <div><?php echo"Email: ",$admin_email ?></div>
+                >
             </div>
         </div>
         <!-- Right Content -->
@@ -188,8 +189,8 @@ function passwordToToken($password){
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="vendor1/jquery/jquery.min.js"></script>
-    <script src="vendor1/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
